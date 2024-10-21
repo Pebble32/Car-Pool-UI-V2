@@ -95,9 +95,7 @@ const RideOfferEdit = () => {
             onChange={handleChange}
           >
             <option value="AVAILABLE">Available</option>
-            <option value="UNAVAILABLE">Unavailable</option>
             <option value="CANCELLED">Cancelled</option>
-            <option value="FINISHED">Finished</option>
           </select>
         </div>
         <button type="submit" className="btn btn-primary">Save Changes</button>
