@@ -1,4 +1,3 @@
-
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -8,6 +7,7 @@ import Logout from './components/Logout';
 import RideOffers from './components/RideOffers';
 import RideOfferDetails from './components/RideOfferDetails';
 import RideOfferEdit from './components/RideOfferEdit';
+import CreateRideOffer from './components/CreateRideOffer';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -23,6 +23,7 @@ function App() {
           <Route path="/ride-offers" element={<RideOffers />} />
           <Route path="/ride-offers/:id" element={<RideOfferDetails />} />
           <Route path="/ride-offers/edit/:id" element={<RideOfferEdit />} />
+          <Route path="/create-ride-offer" element={<CreateRideOffer />} />
         </Routes>
       </div>
     </Router>
