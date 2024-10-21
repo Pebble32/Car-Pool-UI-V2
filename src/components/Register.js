@@ -1,6 +1,8 @@
+// src/components/Register.js
 import React, { useState } from 'react';
 import ApiClient from '../generated-api/src/ApiClient';
 import AuthApi from '../generated-api/src/api/AuthenticationRegistrationApi';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +28,7 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
 
-    authApi.register(formData, (error, data, response) => {
+    authApi.register(formData, (error, data) => {
       if (error) {
         console.error('Registration failed:', error);
         alert('Registration failed');
@@ -63,6 +65,9 @@ const Register = () => {
         </div>
         <button type="submit" className="btn btn-primary mt-3">Register</button>
       </form>
+      <p className="mt-3">
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 };
