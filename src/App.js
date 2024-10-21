@@ -10,6 +10,7 @@ import RideOfferDetails from './components/RideOfferDetails';
 import RideOfferEdit from './components/RideOfferEdit';
 import Navigation from './components/Navigation';
 import CreateRideOffer from './components/CreateRideOffer';
+import ViewUserRideRequests from './components/ViewUsersRideRequests';
 import Home from './components/Home';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/ride-offers" element={<RideOffers />} />
             <Route path="/ride-offers/:id" element={<RideOfferDetails />} />
             <Route path="/ride-offers/edit/:id" element={<RideOfferEdit />} />
+            <Route path="/my-ride-requests" element={<ViewUserRideRequests />} />
             <Route path="/create-ride-offer" element={<CreateRideOffer />} />
           </Routes>
         </div>
