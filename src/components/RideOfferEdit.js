@@ -1,4 +1,3 @@
-
 // src/components/RideOfferEdit.js
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,6 +14,8 @@ const RideOfferEdit = () => {
 
   const [updatedOffer, setUpdatedOffer] = useState({
     ...offer,
+    rideId: offer.rideId || offer.id, // Add rideId to the updated offer
+    rideStatus: offer.rideStatus || 'AVAILABLE', // Add rideStatus to the updated offer with a default value
   });
 
   const handleChange = (e) => {
@@ -27,7 +28,11 @@ const RideOfferEdit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    rideOfferApi.editRideOfferDetails(updatedOffer, (error, data, response) => {
+    const updatedOfferWithId = {
+      ...updatedOffer,
+      rideId: updatedOffer.rideId || offer.rideId || offer.id, // Ensure rideId is included in the request
+    };
+    rideOfferApi.editRideOfferDetails(updatedOfferWithId, (error, data, response) => {
       if (error) {
         console.error('Error updating ride offer:', error);
       } else {
@@ -80,6 +85,20 @@ const RideOfferEdit = () => {
             value={updatedOffer.availableSeats}
             onChange={handleChange}
           />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Ride Status</label>
+          <select
+            className="form-control"
+            name="rideStatus"
+            value={updatedOffer.rideStatus}
+            onChange={handleChange}
+          >
+            <option value="AVAILABLE">Available</option>
+            <option value="UNAVAILABLE">Unavailable</option>
+            <option value="CANCELLED">Cancelled</option>
+            <option value="FINISHED">Finished</option>
+          </select>
         </div>
         <button type="submit" className="btn btn-primary">Save Changes</button>
         <button type="button" className="btn btn-secondary ms-2" onClick={() => navigate('/ride-offers')}>Cancel</button>
