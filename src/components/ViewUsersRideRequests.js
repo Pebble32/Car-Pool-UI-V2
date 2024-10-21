@@ -56,17 +56,15 @@ const ViewUsersRideRequests = () => {
           <thead>
             <tr>
               <th>Ride Offer ID</th>
-              <th>Requester Email</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {rideRequests.length > 0 ? (
+            {rideRequests && rideRequests.length > 0 ? (
               rideRequests.map((request) => (
                 <tr key={request.id}>
                   <td>{request.rideOfferId}</td>
-                  <td>{request.requesterEmail}</td>
                   <td>{request.requestStatus}</td>
                   <td>
                     {request.requestStatus === 'PENDING' && (
@@ -79,7 +77,7 @@ const ViewUsersRideRequests = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4">No ride requests found.</td>
+                <td colSpan="3">No ride requests found.</td>
               </tr>
             )}
           </tbody>
