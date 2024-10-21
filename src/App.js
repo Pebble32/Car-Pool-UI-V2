@@ -8,6 +8,7 @@ import RideOffers from './components/RideOffers';
 import RideOfferDetails from './components/RideOfferDetails';
 import RideOfferEdit from './components/RideOfferEdit';
 import CreateRideOffer from './components/CreateRideOffer';
+import ViewUsersRideRequests from './components/ViewUsersRideRequests';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/ride-offers/:id" element={<RideOfferDetails />} />
           <Route path="/ride-offers/edit/:id" element={<RideOfferEdit />} />
           <Route path="/create-ride-offer" element={<CreateRideOffer />} />
+          <Route path="/my-ride-requests" element={<ViewUsersRideRequests />} />
         </Routes>
       </div>
     </Router>
