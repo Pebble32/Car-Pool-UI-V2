@@ -1,38 +1,154 @@
-.App {
-  text-align: center;
-}
+import React, { useEffect, useRef } from 'react';
+import './Home.css';
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+const Home = () => {
+  const animationRef = useRef(null);
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+  useEffect(() => {
+    const canvas = animationRef.current;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight / 2;
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+    let particlesArray = [];
+    const mouse = {
+      x: null,
+      y: null,
+      radius: 150
+    };
 
-.App-link {
-  color: #61dafb;
-}
+    window.addEventListener('mousemove', (event) => {
+      mouse.x = event.x;
+      mouse.y = event.y;
+    });
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+    class Particle {
+      constructor(x, y, directionX, directionY, size, color) {
+        this.x = x;
+        this.y = y;
+        this.directionX = directionX;
+        this.directionY = directionY;
+        this.size = size;
+        this.color = color;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+      update() {
+        if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+          this.directionX = -this.directionX;
+        }
+        if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+          this.directionY = -this.directionY;
+        }
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouse.radius + this.size) {
+          if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+            this.x += 10;
+          }
+          if (mouse.x > this.x && this.x > this.size * 10) {
+            this.x -= 10;
+          }
+          if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+            this.y += 10;
+          }
+          if (mouse.y > this.y && this.y > this.size * 10) {
+            this.y -= 10;
+          }
+        }
+        this.x += this.directionX;
+        this.y += this.directionY;
+        this.draw();
+      }
+    }
+
+    function init() {
+      particlesArray = [];
+      let numberOfParticles = (canvas.height * canvas.width) / 9000;
+      for (let i = 0; i < numberOfParticles; i++) {
+        let size = (Math.random() * 5) + 1;
+        let x = Math.random() * (canvas.width - size * 2) + size * 2;
+        let y = Math.random() * (canvas.height - size * 2) + size * 2;
+        let directionX = (Math.random() * 2) - 1;
+        let directionY = (Math.random() * 2) - 1;
+        let color = '#8C5523';
+        particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+      }
+    }
+
+    init();
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight / 2;
+      init();
+    });
+  }, []);
+
+  return (
+    <div className="container-fluid p-0">
+      {/* Header Section with Animation */}
+      <div className="jumbotron text-center mb-0" style={{ position: 'relative', overflow: 'hidden', padding: '5rem', backgroundColor: '#222', color: '#fff', height: '50vh' }}>
+        <canvas ref={animationRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}></canvas>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <h1 className="display-4 mb-4">Welcome to Háskóli Íslands Carpooling Service!</h1>
+          <p className="lead">Discover a better way to commute — eco-friendly, affordable, and community-driven.</p>
+          <button className="btn btn-primary btn-lg mt-3">Get Started</button>
+        </div>
+      </div>
+
+      {/* Community Benefits Section */}
+      <div className="row justify-content-center my-5">
+        <div className="col-md-8 text-center">
+          <h2 className="text-primary">Join a Greener Community</h2>
+          <p className="lead">
+            Imagine a community where getting to campus is not just about travel, but about connections, sustainability, and convenience. Our university carpooling service is here to make your commute more eco-friendly, affordable, and enjoyable.
+          </p>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="row text-center my-5">
+        <div className="col-md-4">
+          <h3 className="text-success">Save Money</h3>
+          <p>Cut down on travel costs by sharing rides with fellow students and staff.</p>
+        </div>
+        <div className="col-md-4">
+          <h3 className="text-success">Reduce Emissions</h3>
+          <p>Help reduce traffic congestion and pollution in the greater Reykjavík area.</p>
+        </div>
+        <div className="col-md-4">
+          <h3 className="text-success">Build Community</h3>
+          <p>Make meaningful connections on your way to campus.</p>
+        </div>
+      </div>
+
+      {/* Call to Action Section */}
+      <div className="row justify-content-center my-5">
+        <div className="col-md-8 text-center">
+          <h2 className="text-success">Let’s Drive Change — One Shared Ride at a Time</h2>
+          <p className="lead">
+            Ready to make your journey to campus more social, sustainable, and stress-free? Sign up today and be part of the solution!
+          </p>
+          <button className="btn btn-primary btn-lg mt-3">Join Now</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

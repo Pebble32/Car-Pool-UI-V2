@@ -9,6 +9,8 @@ import RideOffers from './components/RideOffers';
 import RideOfferDetails from './components/RideOfferDetails';
 import RideOfferEdit from './components/RideOfferEdit';
 import Navigation from './components/Navigation';
+import CreateRideOffer from './components/CreateRideOffer';
+import Home from './components/Home';
 
 function App() {
   return (
@@ -17,13 +19,14 @@ function App() {
         <div className="App">
           <Navigation />
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/ride-offers" element={<RideOffers />} />
             <Route path="/ride-offers/:id" element={<RideOfferDetails />} />
             <Route path="/ride-offers/edit/:id" element={<RideOfferEdit />} />
+            <Route path="/create-ride-offer" element={<CreateRideOffer />} />
           </Routes>
         </div>
       </Router>
