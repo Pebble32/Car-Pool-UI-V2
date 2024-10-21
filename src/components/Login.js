@@ -1,13 +1,15 @@
 // src/components/Login.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import ApiClient from '../generated-api/src/ApiClient';
 import AuthApi from '../generated-api/src/api/AuthenticationRegistrationApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { setIsLoggedIn, setUserName } = useContext(AuthContext);
 
   const apiClient = new ApiClient();
   apiClient.basePath = 'http://localhost:8088/api/v1';
@@ -18,13 +20,14 @@ const Login = () => {
 
     const authenticationRequest = { email, password };
 
-    authApi.authenticate(authenticationRequest, (error, data, response) => {
+    authApi.authenticate(authenticationRequest, (error, data) => {
       if (error) {
         console.error('Login failed:', error);
         alert('Invalid credentials');
       } else {
-        console.log('Login successful:', data);
-        navigate('/ride-offers'); // Redirect after successful login
+        setIsLoggedIn(true);
+        setUserName(email.split('@')[0]);
+        navigate('/ride-offers');
       }
     });
   };
@@ -43,6 +46,9 @@ const Login = () => {
         </div>
         <button type="submit" className="btn btn-primary mt-3">Login</button>
       </form>
+      <p className="mt-3">
+        Don't have an account? <Link to="/register">Register</Link>
+      </p>
     </div>
   );
 };

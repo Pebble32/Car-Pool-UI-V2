@@ -1,27 +1,23 @@
 // src/components/Navigation.js
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import ApiClient from '../generated-api/src/ApiClient';
+import { AuthContext } from '../context/AuthContext';
 
 const Navigation = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('User');
+  const { isLoggedIn, setIsLoggedIn, userName, setUserName } = useContext(AuthContext);
   const apiClient = new ApiClient();
   apiClient.basePath = 'http://localhost:8088/api/v1';
 
   const checkLoginStatus = () => {
     apiClient.callApi('/auth/check', 'GET', {}, {}, {}, {}, null, [], ['text/plain'], ['text/plain'], null, null, (error, data, response) => {
-      console.log('Full Response:', response);
-      console.log('Parsed Data:', data);
       if (error || !response || !response.text) {
-        console.error('Error checking current user:', error);
         setIsLoggedIn(false);
       } else {
         const userEmail = response.text;
-        console.log('Current user email:', userEmail);
         setIsLoggedIn(userEmail.length > 0);
-        setUserName(userEmail.split('@')[0]); // Use part of email as username
+        setUserName(userEmail.split('@')[0]);
       }
     });
   };
@@ -31,13 +27,10 @@ const Navigation = () => {
   }, []);
 
   const handleLogout = () => {
-    apiClient.callApi('/auth/logout', 'POST', {}, {}, {}, {}, null, [], ['application/json'], ['application/json'], null, null, (error, data, response) => {
-      if (error) {
-        console.error('Error logging out:', error);
-      } else {
-        console.log('Logged out successfully');
+    apiClient.callApi('/auth/logout', 'POST', {}, {}, {}, {}, null, [], ['application/json'], ['application/json'], null, null, (error) => {
+      if (!error) {
         setIsLoggedIn(false);
-        setUserName('User');
+        setUserName('');
       }
     });
   };
@@ -52,7 +45,7 @@ const Navigation = () => {
             <Nav.Link as={Link} to="/ride-offers">Ride Offers</Nav.Link>
             <Nav.Link as={Link} to="/create-ride-offer">Create Ride Offer</Nav.Link>
             {isLoggedIn ? (
-              <NavDropdown title={userName} id="user-dropdown">
+              <NavDropdown title={userName || 'User'} id="user-dropdown">
                 <NavDropdown.Item as={Link} to="/my-ride-requests">My Ride Requests</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-offers">My Ride Offers</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/user-details">User Details</NavDropdown.Item>
