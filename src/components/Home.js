@@ -3,6 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 
 const Home = () => {
   const animationRef = useRef(null);
+  let followMouse = true;
 
   useEffect(() => {
     const canvas = animationRef.current;
@@ -14,13 +15,31 @@ const Home = () => {
     const mouse = { x: null, y: null, radius: 150 };
 
     window.addEventListener('mousemove', (event) => {
-      mouse.x = event.x;
-      mouse.y = event.y;
+      if (followMouse) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+      }
     });
 
     window.addEventListener('mouseout', () => {
       mouse.x = null;
       mouse.y = null;
+    });
+
+    window.addEventListener('click', (event) => {
+      const numberOfParticles = Math.floor(Math.random() * 10) + 5;
+      for (let i = 0; i < numberOfParticles; i++) {
+        let size = (Math.random() * 5) + 1;
+        let directionX = (Math.random() * 2) - 1;
+        let directionY = (Math.random() * 2) - 1;
+        let color = '#B7C9E2'; // Updated to a brighter color to make particles more visible
+        particlesArray.push(new Particle(event.x, event.y, directionX, directionY, size, color));
+      }
+    });
+
+    window.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      followMouse = !followMouse;
     });
 
     class Particle {
@@ -48,7 +67,7 @@ const Home = () => {
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
-        if (mouse.x !== null && mouse.y !== null && distance < mouse.radius + this.size) {
+        if (followMouse && mouse.x !== null && mouse.y !== null && distance < mouse.radius + this.size) {
           this.x += dx * 0.05;
           this.y += dy * 0.05;
         } else {
