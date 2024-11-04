@@ -18,14 +18,17 @@ import AuthenticationRequest from './model/AuthenticationRequest';
 import EditRideOfferRequest from './model/EditRideOfferRequest';
 import PageResponseRideOfferResponse from './model/PageResponseRideOfferResponse';
 import PageResponseRideRequestResponse from './model/PageResponseRideRequestResponse';
+import PageResponseUserResponse from './model/PageResponseUserResponse';
 import RegisterRequest from './model/RegisterRequest';
 import RideOfferRequest from './model/RideOfferRequest';
 import RideOfferResponse from './model/RideOfferResponse';
 import RideRequestRequest from './model/RideRequestRequest';
 import RideRequestResponse from './model/RideRequestResponse';
+import UserResponse from './model/UserResponse';
 import AuthenticationRegistrationApi from './api/AuthenticationRegistrationApi';
 import RideOfferApi from './api/RideOfferApi';
 import RideRequestApi from './api/RideRequestApi';
+import UserApi from './api/UserApi';
 
 
 /**
@@ -97,6 +100,12 @@ export {
     PageResponseRideRequestResponse,
 
     /**
+     * The PageResponseUserResponse model constructor.
+     * @property {module:model/PageResponseUserResponse}
+     */
+    PageResponseUserResponse,
+
+    /**
      * The RegisterRequest model constructor.
      * @property {module:model/RegisterRequest}
      */
@@ -127,6 +136,12 @@ export {
     RideRequestResponse,
 
     /**
+     * The UserResponse model constructor.
+     * @property {module:model/UserResponse}
+     */
+    UserResponse,
+
+    /**
     * The AuthenticationRegistrationApi service constructor.
     * @property {module:api/AuthenticationRegistrationApi}
     */
@@ -142,5 +157,11 @@ export {
     * The RideRequestApi service constructor.
     * @property {module:api/RideRequestApi}
     */
-    RideRequestApi
+    RideRequestApi,
+
+    /**
+    * The UserApi service constructor.
+    * @property {module:api/UserApi}
+    */
+    UserApi
 };

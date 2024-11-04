@@ -72,6 +72,9 @@ class RegisterRequest {
             if (data.hasOwnProperty('phoneNumber')) {
                 obj['phoneNumber'] = ApiClient.convertToType(data['phoneNumber'], 'String');
             }
+            if (data.hasOwnProperty('profilePicture')) {
+                obj['profilePicture'] = ApiClient.convertToType(data['profilePicture'], 'String');
+            }
         }
         return obj;
     }
@@ -108,6 +111,10 @@ class RegisterRequest {
         if (data['phoneNumber'] && !(typeof data['phoneNumber'] === 'string' || data['phoneNumber'] instanceof String)) {
             throw new Error("Expected the field `phoneNumber` to be a primitive type in the JSON string but got " + data['phoneNumber']);
         }
+        // ensure the json data is a string
+        if (data['profilePicture'] && !(typeof data['profilePicture'] === 'string' || data['profilePicture'] instanceof String)) {
+            throw new Error("Expected the field `profilePicture` to be a primitive type in the JSON string but got " + data['profilePicture']);
+        }
 
         return true;
     }
@@ -141,6 +148,11 @@ RegisterRequest.prototype['lastname'] = undefined;
  * @member {String} phoneNumber
  */
 RegisterRequest.prototype['phoneNumber'] = undefined;
+
+/**
+ * @member {String} profilePicture
+ */
+RegisterRequest.prototype['profilePicture'] = undefined;
 
 
 

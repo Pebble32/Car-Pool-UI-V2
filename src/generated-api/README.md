@@ -123,20 +123,30 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *CarPoolApi.AuthenticationRegistrationApi* | [**authenticate**](docs/AuthenticationRegistrationApi.md#authenticate) | **POST** /auth/authenticate | 
 *CarPoolApi.AuthenticationRegistrationApi* | [**check**](docs/AuthenticationRegistrationApi.md#check) | **GET** /auth/check | 
+*CarPoolApi.AuthenticationRegistrationApi* | [**getUser**](docs/AuthenticationRegistrationApi.md#getUser) | **GET** /auth/get-user | 
 *CarPoolApi.AuthenticationRegistrationApi* | [**logout**](docs/AuthenticationRegistrationApi.md#logout) | **POST** /auth/logout | 
 *CarPoolApi.AuthenticationRegistrationApi* | [**register**](docs/AuthenticationRegistrationApi.md#register) | **POST** /auth/register | 
 *CarPoolApi.RideOfferApi* | [**createRideOffer**](docs/RideOfferApi.md#createRideOffer) | **POST** /offers/create | 
 *CarPoolApi.RideOfferApi* | [**deleteRideOffer**](docs/RideOfferApi.md#deleteRideOffer) | **DELETE** /offers/details/{id} | 
+*CarPoolApi.RideOfferApi* | [**deleteRideOfferFinished**](docs/RideOfferApi.md#deleteRideOfferFinished) | **DELETE** /offers/delete-finished | 
 *CarPoolApi.RideOfferApi* | [**editRideOfferDetails**](docs/RideOfferApi.md#editRideOfferDetails) | **PUT** /offers/details | 
+*CarPoolApi.RideOfferApi* | [**filterRideOffers**](docs/RideOfferApi.md#filterRideOffers) | **GET** /offers/filter | 
 *CarPoolApi.RideOfferApi* | [**findAllRideOffers**](docs/RideOfferApi.md#findAllRideOffers) | **GET** /offers/all | 
 *CarPoolApi.RideOfferApi* | [**findAllRideOffersPaginated**](docs/RideOfferApi.md#findAllRideOffersPaginated) | **GET** /offers/all/paginated | 
+*CarPoolApi.RideOfferApi* | [**markRideAsFinished**](docs/RideOfferApi.md#markRideAsFinished) | **PUT** /offers/mark-finished/{id} | 
+*CarPoolApi.RideOfferApi* | [**searchForRides**](docs/RideOfferApi.md#searchForRides) | **GET** /offers/search | 
+*CarPoolApi.RideOfferApi* | [**showAllProviders**](docs/RideOfferApi.md#showAllProviders) | **GET** /offers/all/providers | 
 *CarPoolApi.RideOfferApi* | [**viewRideOfferDetails**](docs/RideOfferApi.md#viewRideOfferDetails) | **GET** /offers/details | 
 *CarPoolApi.RideRequestApi* | [**answerRideOffer**](docs/RideRequestApi.md#answerRideOffer) | **PUT** /ride-requests/answer | 
 *CarPoolApi.RideRequestApi* | [**createRideRequest**](docs/RideRequestApi.md#createRideRequest) | **POST** /ride-requests/create | 
+*CarPoolApi.RideRequestApi* | [**deleteRideRequest**](docs/RideRequestApi.md#deleteRideRequest) | **DELETE** /ride-requests/delete-request/{id} | 
 *CarPoolApi.RideRequestApi* | [**getRideOffers**](docs/RideRequestApi.md#getRideOffers) | **GET** /ride-requests/requests | 
 *CarPoolApi.RideRequestApi* | [**getRideRequestsForRideOfferPaginated**](docs/RideRequestApi.md#getRideRequestsForRideOfferPaginated) | **GET** /ride-requests/requests/paginated | 
 *CarPoolApi.RideRequestApi* | [**viewUsersRideRequests**](docs/RideRequestApi.md#viewUsersRideRequests) | **GET** /ride-requests/user-requests | 
 *CarPoolApi.RideRequestApi* | [**viewUsersRideRequestsPaginated**](docs/RideRequestApi.md#viewUsersRideRequestsPaginated) | **GET** /ride-requests/user-requests/paginated | 
+*CarPoolApi.UserApi* | [**getProfilePicture**](docs/UserApi.md#getProfilePicture) | **GET** /users/profile-picture | 
+*CarPoolApi.UserApi* | [**getUsersPaginated**](docs/UserApi.md#getUsersPaginated) | **GET** /users/all/paginated | 
+*CarPoolApi.UserApi* | [**uploadProfilePicture**](docs/UserApi.md#uploadProfilePicture) | **POST** /users/profile-picture | 
 
 
 ## Documentation for Models
@@ -146,11 +156,13 @@ Class | Method | HTTP request | Description
  - [CarPoolApi.EditRideOfferRequest](docs/EditRideOfferRequest.md)
  - [CarPoolApi.PageResponseRideOfferResponse](docs/PageResponseRideOfferResponse.md)
  - [CarPoolApi.PageResponseRideRequestResponse](docs/PageResponseRideRequestResponse.md)
+ - [CarPoolApi.PageResponseUserResponse](docs/PageResponseUserResponse.md)
  - [CarPoolApi.RegisterRequest](docs/RegisterRequest.md)
  - [CarPoolApi.RideOfferRequest](docs/RideOfferRequest.md)
  - [CarPoolApi.RideOfferResponse](docs/RideOfferResponse.md)
  - [CarPoolApi.RideRequestRequest](docs/RideRequestRequest.md)
  - [CarPoolApi.RideRequestResponse](docs/RideRequestResponse.md)
+ - [CarPoolApi.UserResponse](docs/UserResponse.md)
 
 
 ## Documentation for Authorization

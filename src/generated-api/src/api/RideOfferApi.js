@@ -17,6 +17,7 @@ import EditRideOfferRequest from '../model/EditRideOfferRequest';
 import PageResponseRideOfferResponse from '../model/PageResponseRideOfferResponse';
 import RideOfferRequest from '../model/RideOfferRequest';
 import RideOfferResponse from '../model/RideOfferResponse';
+import UserResponse from '../model/UserResponse';
 
 /**
 * RideOffer service.
@@ -118,6 +119,40 @@ export default class RideOfferApi {
     }
 
     /**
+     * Callback function to receive the result of the deleteRideOfferFinished operation.
+     * @callback module:api/RideOfferApi~deleteRideOfferFinishedCallback
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * @param {module:api/RideOfferApi~deleteRideOfferFinishedCallback} callback The callback function, accepting three arguments: error, data, response
+     */
+    deleteRideOfferFinished(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = [];
+      let returnType = null;
+      return this.apiClient.callApi(
+        '/offers/delete-finished', 'DELETE',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the editRideOfferDetails operation.
      * @callback module:api/RideOfferApi~editRideOfferDetailsCallback
      * @param {String} error Error message, if any.
@@ -152,6 +187,53 @@ export default class RideOfferApi {
       let returnType = RideOfferResponse;
       return this.apiClient.callApi(
         '/offers/details', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the filterRideOffers operation.
+     * @callback module:api/RideOfferApi~filterRideOffersCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/PageResponseRideOfferResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * @param {Object} opts Optional parameters
+     * @param {Number} [page = 0)] 
+     * @param {Number} [size = 10)] 
+     * @param {String} [startLocation] 
+     * @param {String} [endLocation] 
+     * @param {Date} [departureTime] 
+     * @param {module:api/RideOfferApi~filterRideOffersCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/PageResponseRideOfferResponse}
+     */
+    filterRideOffers(opts, callback) {
+      opts = opts || {};
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'page': opts['page'],
+        'size': opts['size'],
+        'startLocation': opts['startLocation'],
+        'endLocation': opts['endLocation'],
+        'departureTime': opts['departureTime']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = PageResponseRideOfferResponse;
+      return this.apiClient.callApi(
+        '/offers/filter', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -228,6 +310,129 @@ export default class RideOfferApi {
       let returnType = PageResponseRideOfferResponse;
       return this.apiClient.callApi(
         '/offers/all/paginated', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the markRideAsFinished operation.
+     * @callback module:api/RideOfferApi~markRideAsFinishedCallback
+     * @param {String} error Error message, if any.
+     * @param {String} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * @param {Number} id 
+     * @param {module:api/RideOfferApi~markRideAsFinishedCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link String}
+     */
+    markRideAsFinished(id, callback) {
+      let postBody = null;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling markRideAsFinished");
+      }
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = 'String';
+      return this.apiClient.callApi(
+        '/offers/mark-finished/{id}', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the searchForRides operation.
+     * @callback module:api/RideOfferApi~searchForRidesCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/PageResponseRideOfferResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * @param {String} keyword 
+     * @param {Object} opts Optional parameters
+     * @param {Number} [page = 0)] 
+     * @param {Number} [size = 10)] 
+     * @param {module:api/RideOfferApi~searchForRidesCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/PageResponseRideOfferResponse}
+     */
+    searchForRides(keyword, opts, callback) {
+      opts = opts || {};
+      let postBody = null;
+      // verify the required parameter 'keyword' is set
+      if (keyword === undefined || keyword === null) {
+        throw new Error("Missing the required parameter 'keyword' when calling searchForRides");
+      }
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'page': opts['page'],
+        'size': opts['size'],
+        'keyword': keyword
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = PageResponseRideOfferResponse;
+      return this.apiClient.callApi(
+        '/offers/search', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the showAllProviders operation.
+     * @callback module:api/RideOfferApi~showAllProvidersCallback
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/UserResponse>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * @param {module:api/RideOfferApi~showAllProvidersCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link Array.<module:model/UserResponse>}
+     */
+    showAllProviders(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = [UserResponse];
+      return this.apiClient.callApi(
+        '/offers/all/providers', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

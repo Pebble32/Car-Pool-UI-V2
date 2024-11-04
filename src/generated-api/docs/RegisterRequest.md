@@ -9,5 +9,6 @@ Name | Type | Description | Notes
 **firstname** | **String** |  | 
 **lastname** | **String** |  | 
 **phoneNumber** | **String** |  | 
+**profilePicture** | **String** |  | [optional] 
 
 

@@ -15,6 +15,7 @@
 import ApiClient from "../ApiClient";
 import AuthenticationRequest from '../model/AuthenticationRequest';
 import RegisterRequest from '../model/RegisterRequest';
+import UserResponse from '../model/UserResponse';
 
 /**
 * AuthenticationRegistration service.
@@ -105,6 +106,41 @@ export default class AuthenticationRegistrationApi {
       let returnType = Object;
       return this.apiClient.callApi(
         '/auth/check', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the getUser operation.
+     * @callback module:api/AuthenticationRegistrationApi~getUserCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * @param {module:api/AuthenticationRegistrationApi~getUserCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/UserResponse}
+     */
+    getUser(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = UserResponse;
+      return this.apiClient.callApi(
+        '/auth/get-user', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

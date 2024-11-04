@@ -6,9 +6,14 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createRideOffer**](RideOfferApi.md#createRideOffer) | **POST** /offers/create | 
 [**deleteRideOffer**](RideOfferApi.md#deleteRideOffer) | **DELETE** /offers/details/{id} | 
+[**deleteRideOfferFinished**](RideOfferApi.md#deleteRideOfferFinished) | **DELETE** /offers/delete-finished | 
 [**editRideOfferDetails**](RideOfferApi.md#editRideOfferDetails) | **PUT** /offers/details | 
+[**filterRideOffers**](RideOfferApi.md#filterRideOffers) | **GET** /offers/filter | 
 [**findAllRideOffers**](RideOfferApi.md#findAllRideOffers) | **GET** /offers/all | 
 [**findAllRideOffersPaginated**](RideOfferApi.md#findAllRideOffersPaginated) | **GET** /offers/all/paginated | 
+[**markRideAsFinished**](RideOfferApi.md#markRideAsFinished) | **PUT** /offers/mark-finished/{id} | 
+[**searchForRides**](RideOfferApi.md#searchForRides) | **GET** /offers/search | 
+[**showAllProviders**](RideOfferApi.md#showAllProviders) | **GET** /offers/all/providers | 
 [**viewRideOfferDetails**](RideOfferApi.md#viewRideOfferDetails) | **GET** /offers/details | 
 
 
@@ -99,6 +104,45 @@ No authorization required
 - **Accept**: Not defined
 
 
+## deleteRideOfferFinished
+
+> deleteRideOfferFinished()
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.RideOfferApi();
+apiInstance.deleteRideOfferFinished((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+});
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
+
+
 ## editRideOfferDetails
 
 > RideOfferResponse editRideOfferDetails(editRideOfferRequest)
@@ -139,6 +183,59 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## filterRideOffers
+
+> PageResponseRideOfferResponse filterRideOffers(opts)
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.RideOfferApi();
+let opts = {
+  'page': 0, // Number | 
+  'size': 10, // Number | 
+  'startLocation': "startLocation_example", // String | 
+  'endLocation': "endLocation_example", // String | 
+  'departureTime': new Date("2013-10-20T19:20:30+01:00") // Date | 
+};
+apiInstance.filterRideOffers(opts, (error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page** | **Number**|  | [optional] [default to 0]
+ **size** | **Number**|  | [optional] [default to 10]
+ **startLocation** | **String**|  | [optional] 
+ **endLocation** | **String**|  | [optional] 
+ **departureTime** | **Date**|  | [optional] 
+
+### Return type
+
+[**PageResponseRideOfferResponse**](PageResponseRideOfferResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
 - **Accept**: application/json
 
 
@@ -217,6 +314,137 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**PageResponseRideOfferResponse**](PageResponseRideOfferResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## markRideAsFinished
+
+> String markRideAsFinished(id)
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.RideOfferApi();
+let id = 789; // Number | 
+apiInstance.markRideAsFinished(id, (error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **Number**|  | 
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## searchForRides
+
+> PageResponseRideOfferResponse searchForRides(keyword, opts)
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.RideOfferApi();
+let keyword = "keyword_example"; // String | 
+let opts = {
+  'page': 0, // Number | 
+  'size': 10 // Number | 
+};
+apiInstance.searchForRides(keyword, opts, (error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **keyword** | **String**|  | 
+ **page** | **Number**|  | [optional] [default to 0]
+ **size** | **Number**|  | [optional] [default to 10]
+
+### Return type
+
+[**PageResponseRideOfferResponse**](PageResponseRideOfferResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## showAllProviders
+
+> [UserResponse] showAllProviders()
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.RideOfferApi();
+apiInstance.showAllProviders((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**[UserResponse]**](UserResponse.md)
 
 ### Authorization
 

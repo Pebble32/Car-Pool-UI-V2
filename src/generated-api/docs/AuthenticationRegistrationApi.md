@@ -6,6 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**authenticate**](AuthenticationRegistrationApi.md#authenticate) | **POST** /auth/authenticate | 
 [**check**](AuthenticationRegistrationApi.md#check) | **GET** /auth/check | 
+[**getUser**](AuthenticationRegistrationApi.md#getUser) | **GET** /auth/get-user | 
 [**logout**](AuthenticationRegistrationApi.md#logout) | **POST** /auth/logout | 
 [**register**](AuthenticationRegistrationApi.md#register) | **POST** /auth/register | 
 
@@ -82,6 +83,45 @@ This endpoint does not need any parameter.
 ### Return type
 
 **Object**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
+## getUser
+
+> UserResponse getUser()
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.AuthenticationRegistrationApi();
+apiInstance.getUser((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**UserResponse**](UserResponse.md)
 
 ### Authorization
 

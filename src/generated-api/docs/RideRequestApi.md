@@ -6,6 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**answerRideOffer**](RideRequestApi.md#answerRideOffer) | **PUT** /ride-requests/answer | 
 [**createRideRequest**](RideRequestApi.md#createRideRequest) | **POST** /ride-requests/create | 
+[**deleteRideRequest**](RideRequestApi.md#deleteRideRequest) | **DELETE** /ride-requests/delete-request/{id} | 
 [**getRideOffers**](RideRequestApi.md#getRideOffers) | **GET** /ride-requests/requests | 
 [**getRideRequestsForRideOfferPaginated**](RideRequestApi.md#getRideRequestsForRideOfferPaginated) | **GET** /ride-requests/requests/paginated | 
 [**viewUsersRideRequests**](RideRequestApi.md#viewUsersRideRequests) | **GET** /ride-requests/user-requests | 
@@ -97,6 +98,49 @@ No authorization required
 
 - **Content-Type**: application/json
 - **Accept**: application/json
+
+
+## deleteRideRequest
+
+> deleteRideRequest(id)
+
+
+
+### Example
+
+```javascript
+import CarPoolApi from 'car_pool_api';
+
+let apiInstance = new CarPoolApi.RideRequestApi();
+let id = 789; // Number | 
+apiInstance.deleteRideRequest(id, (error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+});
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **Number**|  | 
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
 
 
 ## getRideOffers
