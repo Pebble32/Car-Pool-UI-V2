@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiClient from '../generated-api/src/ApiClient';
 import RideOfferApi from '../generated-api/src/api/RideOfferApi';
-import { Button, Dropdown, ButtonGroup, Alert, Spinner } from 'react-bootstrap';
+import { Button, Dropdown, ButtonGroup, Alert, Spinner, Form } from 'react-bootstrap';
 
 const RideOffers = () => {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const RideOffers = () => {
 
   useEffect(() => {
     fetchRideOffers(currentPage, pageSize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize]);
 
   const fetchCurrentUser = () => {
@@ -54,6 +55,7 @@ const RideOffers = () => {
           setLoading(false);
         } else {
           setCurrentUser(response.text);
+          setLoading(false);
         }
       }
     );
@@ -61,53 +63,74 @@ const RideOffers = () => {
 
   const fetchRideOffers = (page, size) => {
     setLoading(true);
-    if (searchKeyword) {
+    setError(null); // Reset error state
+
+    if (searchKeyword.trim() !== '') {
+      // Search functionality
+      console.log('Performing search with keyword:', searchKeyword.trim());
       rideOfferApi.searchForRides(
-        searchKeyword, // Pass keyword as the first parameter
+        searchKeyword.trim(),
         { page, size },
         (error, data, response) => {
           if (error) {
             console.error('Error searching ride offers:', error);
             setError('Failed to search ride offers.');
           } else {
+            console.log('Search API response:', data);
             setRideOffers(data.content || []);
             setCurrentPage(data.number || 0);
             setTotalPages(data.totalPages || 0);
-
-            // Update firstPage and lastPage without the logical OR operator
             setFirstPage(data.first);
             setLastPage(data.last);
           }
           setLoading(false);
         }
       );
-    } else if (filterStartLocation || filterEndLocation || filterDepartureTime) {
-      let params = { page, size };
-      if (filterStartLocation) params.startLocation = filterStartLocation;
-      if (filterEndLocation) params.endLocation = filterEndLocation;
-      if (filterDepartureTime) {
-        // Convert to ISO 8601 format
-        params.departureTime = new Date(filterDepartureTime).toISOString();
+    } else if (
+      filterStartLocation.trim() !== '' ||
+      filterEndLocation.trim() !== '' ||
+      filterDepartureTime.trim() !== ''
+    ) {
+      // Filter functionality using callApi for more control
+      const queryParams = {
+        page,
+        size,
+      };
+
+      if (filterStartLocation.trim() !== '') queryParams.startLocation = filterStartLocation.trim();
+      if (filterEndLocation.trim() !== '') queryParams.endLocation = filterEndLocation.trim();
+
+      if (filterDepartureTime.trim() !== '') {
+        // Use the input value directly, ensuring it includes seconds set to "00"
+        queryParams.departureTime = `${filterDepartureTime.trim()}:00`;
       }
+
+      // Debugging: Log the query parameters
+      console.log('Filter Query Params:', queryParams);
+
       rideOfferApi.filterRideOffers(
-        params,
+        queryParams,
         (error, data, response) => {
           if (error) {
             console.error('Error filtering ride offers:', error);
             setError('Failed to filter ride offers.');
-          } else {
+          } else if (data) {
+            console.log('Filter API response:', data);
             setRideOffers(data.content || []);
             setCurrentPage(data.number || 0);
             setTotalPages(data.totalPages || 0);
-
-            // Update firstPage and lastPage without the logical OR operator
             setFirstPage(data.first);
             setLastPage(data.last);
+          } else {
+            console.error('Filter API returned null data.');
+            setError('Failed to filter ride offers. No data returned.');
           }
           setLoading(false);
         }
       );
     } else {
+      // Default: Fetch all ride offers paginated
+      console.log('Fetching all ride offers with pagination:', { page, size });
       rideOfferApi.findAllRideOffersPaginated(
         { page, size },
         (error, data, response) => {
@@ -115,11 +138,10 @@ const RideOffers = () => {
             console.error('Error fetching ride offers:', error);
             setError('Failed to fetch ride offers.');
           } else {
+            console.log('Fetch All API response:', data);
             setRideOffers(data.content || []);
             setCurrentPage(data.number || 0);
             setTotalPages(data.totalPages || 0);
-
-            // Update firstPage and lastPage without the logical OR operator
             setFirstPage(data.first);
             setLastPage(data.last);
           }
@@ -130,7 +152,8 @@ const RideOffers = () => {
   };
 
   const handleViewDetails = (offer) => {
-    const isOwner = currentUser && currentUser.toLowerCase() === offer.creatorEmail.toLowerCase();
+    const isOwner =
+      currentUser && currentUser.toLowerCase() === offer.creatorEmail.toLowerCase();
     navigate(`/ride-offers/${offer.id}`, { state: { offer, isOwner } });
   };
 
@@ -156,7 +179,7 @@ const RideOffers = () => {
           console.error('Error requesting to join ride offer:', error);
           setError('Failed to request to join ride offer.');
         } else {
-          console.log('Request to join ride offer sent successfully');
+          console.log('Request to join ride offer sent successfully:', data);
           fetchRideOffers(currentPage, pageSize);
         }
       }
@@ -222,7 +245,10 @@ const RideOffers = () => {
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>Ride Offers</h2>
-        <Dropdown as={ButtonGroup} onSelect={(e) => handlePageSizeChange(Number(e))}>
+        <Dropdown
+          as={ButtonGroup}
+          onSelect={(e) => handlePageSizeChange(Number(e))}
+        >
           <Dropdown.Toggle variant="secondary" id="dropdown-basic">
             Page Size: {pageSize}
           </Dropdown.Toggle>
@@ -243,52 +269,57 @@ const RideOffers = () => {
           value={searchKeyword}
           onChange={handleSearchKeywordChange}
         />
-        <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          onClick={handleSearch}
+        >
           Search
         </button>
       </div>
 
       {/* Filter Fields */}
-      <div className="row mb-3">
-        <div className="col">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Start Location"
-            value={filterStartLocation}
-            onChange={handleFilterStartLocationChange}
-          />
+      <Form>
+        <div className="row mb-3">
+          <div className="col">
+            <Form.Control
+              type="text"
+              placeholder="Start Location"
+              value={filterStartLocation}
+              onChange={handleFilterStartLocationChange}
+            />
+          </div>
+          <div className="col">
+            <Form.Control
+              type="text"
+              placeholder="End Location"
+              value={filterEndLocation}
+              onChange={handleFilterEndLocationChange}
+            />
+          </div>
+          <div className="col">
+            <Form.Control
+              type="datetime-local"
+              placeholder="Departure Time"
+              value={filterDepartureTime}
+              onChange={handleFilterDepartureTimeChange}
+              step="60" // Allows selecting only minutes; seconds set to "00"
+            />
+          </div>
+          <div className="col">
+            <Button variant="outline-secondary" onClick={handleFilter}>
+              Filter
+            </Button>
+          </div>
         </div>
-        <div className="col">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="End Location"
-            value={filterEndLocation}
-            onChange={handleFilterEndLocationChange}
-          />
-        </div>
-        <div className="col">
-          <input
-            type="datetime-local"
-            className="form-control"
-            value={filterDepartureTime}
-            onChange={handleFilterDepartureTimeChange}
-          />
-        </div>
-        <div className="col">
-          <button className="btn btn-outline-secondary" type="button" onClick={handleFilter}>
-            Filter
-          </button>
-        </div>
-      </div>
+      </Form>
 
       {error && <Alert variant="danger">{error}</Alert>}
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" />
         </div>
-      ) : (
+      ) : rideOffers.length > 0 ? (
         <div className="list-group">
           {rideOffers.map((offer) => (
             <div
@@ -307,7 +338,8 @@ const RideOffers = () => {
                   <p className="mb-1">Available Seats: {offer.availableSeats}</p>
                 </div>
                 <div>
-                  {currentUser && currentUser.toLowerCase() === offer.creatorEmail.toLowerCase() ? (
+                  {currentUser &&
+                  currentUser.toLowerCase() === offer.creatorEmail.toLowerCase() ? (
                     <>
                       <Button
                         variant="warning"
@@ -348,6 +380,8 @@ const RideOffers = () => {
             </div>
           ))}
         </div>
+      ) : (
+        <Alert variant="info">No ride offers found.</Alert>
       )}
       <div className="d-flex justify-content-center mt-3">
         <Button
@@ -369,9 +403,9 @@ const RideOffers = () => {
           &lt;
         </Button>
         {[...Array(totalPages).keys()].map((pageNumber) =>
-          (pageNumber === currentPage ||
-            pageNumber === currentPage - 1 ||
-            pageNumber === currentPage + 1) && (
+          pageNumber === currentPage ||
+          pageNumber === currentPage - 1 ||
+          pageNumber === currentPage + 1 ? (
             <Button
               key={pageNumber}
               variant={pageNumber === currentPage ? 'primary' : 'secondary'}
@@ -381,7 +415,7 @@ const RideOffers = () => {
             >
               {pageNumber + 1}
             </Button>
-          )
+          ) : null
         )}
         <Button
           variant="secondary"
