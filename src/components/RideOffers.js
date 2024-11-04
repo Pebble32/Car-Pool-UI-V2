@@ -91,7 +91,7 @@ const RideOffers = () => {
       filterEndLocation.trim() !== '' ||
       filterDepartureTime.trim() !== ''
     ) {
-      // Filter functionality using callApi for more control
+      // Filter functionality
       const queryParams = {
         page,
         size,
@@ -184,6 +184,21 @@ const RideOffers = () => {
         }
       }
     );
+  };
+
+  const handleDelete = (rideOfferId) => {
+    if (window.confirm('Are you sure you want to delete this ride offer?')) {
+      rideOfferApi.deleteRideOffer(rideOfferId, (error, data, response) => {
+        if (error) {
+          console.error('Error deleting ride offer:', error);
+          setError('Failed to delete ride offer.');
+        } else {
+          console.log('Ride offer deleted successfully');
+          // Refresh the ride offers list
+          fetchRideOffers(currentPage, pageSize);
+        }
+      });
+    }
   };
 
   const handlePageSizeChange = (size) => {
@@ -357,7 +372,7 @@ const RideOffers = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/ride-offers/delete/${offer.id}`, { state: { offer } });
+                          handleDelete(offer.id);
                         }}
                       >
                         Delete
