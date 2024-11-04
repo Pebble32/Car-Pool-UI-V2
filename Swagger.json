@@ -42,6 +42,37 @@
                 }
             }
         },
+        "/offers/mark-finished/{id}": {
+            "put": {
+                "tags": [
+                    "RideOffer"
+                ],
+                "operationId": "markRideAsFinished",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/offers/details": {
             "get": {
                 "tags": [
@@ -94,6 +125,62 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/RideOfferResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/profile-picture": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "getProfilePicture",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "uploadProfilePicture",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
                                 }
                             }
                         }
@@ -236,6 +323,48 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/all/paginated": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "getUsersPaginated",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageResponseUserResponse"
                                 }
                             }
                         }
@@ -393,6 +522,123 @@
                 }
             }
         },
+        "/offers/search": {
+            "get": {
+                "tags": [
+                    "RideOffer"
+                ],
+                "operationId": "searchForRides",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageResponseRideOfferResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/filter": {
+            "get": {
+                "tags": [
+                    "RideOffer"
+                ],
+                "operationId": "FilterRideOffers",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "startLocation",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endLocation",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "departureTime",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageResponseRideOfferResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/offers/all": {
             "get": {
                 "tags": [
@@ -408,6 +654,29 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/RideOfferResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/all/providers": {
+            "get": {
+                "tags": [
+                    "RideOffer"
+                ],
+                "operationId": "showAllProviders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserResponse"
                                     }
                                 }
                             }
@@ -458,6 +727,26 @@
                 }
             }
         },
+        "/auth/get-user": {
+            "get": {
+                "tags": [
+                    "Authentication & Registration"
+                ],
+                "operationId": "getUser",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/check": {
             "get": {
                 "tags": [
@@ -474,6 +763,30 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/ride-requests/delete-request/{id}": {
+            "delete": {
+                "tags": [
+                    "RideRequest"
+                ],
+                "operationId": "deleteRideRequest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -495,6 +808,19 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/offers/delete-finished": {
+            "delete": {
+                "tags": [
+                    "RideOffer"
+                ],
+                "operationId": "deleteRideOfferFinished",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -688,6 +1014,9 @@
                     },
                     "phoneNumber": {
                         "type": "string"
+                    },
+                    "profilePicture": {
+                        "type": "string"
                     }
                 }
             },
@@ -705,6 +1034,68 @@
                         "maxLength": 2147483647,
                         "minLength": 8,
                         "type": "string"
+                    }
+                }
+            },
+            "PageResponseUserResponse": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UserResponse"
+                        }
+                    },
+                    "number": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "size": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalElements": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "first": {
+                        "type": "boolean"
+                    },
+                    "last": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "UserResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "string"
+                    },
+                    "createdDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "lastModifiedDate": {
+                        "type": "string",
+                        "format": "date"
                     }
                 }
             },
