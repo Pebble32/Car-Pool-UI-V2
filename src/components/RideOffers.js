@@ -20,6 +20,10 @@ const RideOffers = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [firstPage, setFirstPage] = useState(true);
   const [lastPage, setLastPage] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterStartLocation, setFilterStartLocation] = useState('');
+  const [filterEndLocation, setFilterEndLocation] = useState('');
+  const [filterDepartureTime, setFilterDepartureTime] = useState('');
 
   useEffect(() => {
     fetchCurrentUser();
@@ -57,19 +61,72 @@ const RideOffers = () => {
 
   const fetchRideOffers = (page, size) => {
     setLoading(true);
-    rideOfferApi.findAllRideOffersPaginated({ page, size }, (error, data, response) => {
-      if (error) {
-        console.error('Error fetching ride offers:', error);
-        setError('Failed to fetch ride offers.');
-      } else {
-        setRideOffers(data.content);
-        setCurrentPage(data.number);
-        setTotalPages(data.totalPages);
-        setFirstPage(data.first);
-        setLastPage(data.last);
+    if (searchKeyword) {
+      rideOfferApi.searchForRides(
+        searchKeyword, // Pass keyword as the first parameter
+        { page, size },
+        (error, data, response) => {
+          if (error) {
+            console.error('Error searching ride offers:', error);
+            setError('Failed to search ride offers.');
+          } else {
+            setRideOffers(data.content || []);
+            setCurrentPage(data.number || 0);
+            setTotalPages(data.totalPages || 0);
+
+            // Update firstPage and lastPage without the logical OR operator
+            setFirstPage(data.first);
+            setLastPage(data.last);
+          }
+          setLoading(false);
+        }
+      );
+    } else if (filterStartLocation || filterEndLocation || filterDepartureTime) {
+      let params = { page, size };
+      if (filterStartLocation) params.startLocation = filterStartLocation;
+      if (filterEndLocation) params.endLocation = filterEndLocation;
+      if (filterDepartureTime) {
+        // Convert to ISO 8601 format
+        params.departureTime = new Date(filterDepartureTime).toISOString();
       }
-      setLoading(false);
-    });
+      rideOfferApi.filterRideOffers(
+        params,
+        (error, data, response) => {
+          if (error) {
+            console.error('Error filtering ride offers:', error);
+            setError('Failed to filter ride offers.');
+          } else {
+            setRideOffers(data.content || []);
+            setCurrentPage(data.number || 0);
+            setTotalPages(data.totalPages || 0);
+
+            // Update firstPage and lastPage without the logical OR operator
+            setFirstPage(data.first);
+            setLastPage(data.last);
+          }
+          setLoading(false);
+        }
+      );
+    } else {
+      rideOfferApi.findAllRideOffersPaginated(
+        { page, size },
+        (error, data, response) => {
+          if (error) {
+            console.error('Error fetching ride offers:', error);
+            setError('Failed to fetch ride offers.');
+          } else {
+            setRideOffers(data.content || []);
+            setCurrentPage(data.number || 0);
+            setTotalPages(data.totalPages || 0);
+
+            // Update firstPage and lastPage without the logical OR operator
+            setFirstPage(data.first);
+            setLastPage(data.last);
+          }
+          setLoading(false);
+        }
+      );
+    }
   };
 
   const handleViewDetails = (offer) => {
@@ -80,14 +137,13 @@ const RideOffers = () => {
   const handleRequestToJoin = (offer) => {
     const requestPayload = {
       rideOfferId: offer.id,
-      requestStatus: 'PENDING',
     };
     apiClient.callApi(
       '/ride-requests/create',
       'POST',
       {},
       {},
-      {},
+      { 'Content-Type': 'application/json' }, // Set the header
       {},
       requestPayload,
       [],
@@ -136,6 +192,32 @@ const RideOffers = () => {
     }
   };
 
+  const handleSearchKeywordChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const handleFilterStartLocationChange = (e) => {
+    setFilterStartLocation(e.target.value);
+  };
+
+  const handleFilterEndLocationChange = (e) => {
+    setFilterEndLocation(e.target.value);
+  };
+
+  const handleFilterDepartureTimeChange = (e) => {
+    setFilterDepartureTime(e.target.value);
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(0);
+    fetchRideOffers(0, pageSize);
+  };
+
+  const handleFilter = () => {
+    setCurrentPage(0);
+    fetchRideOffers(0, pageSize);
+  };
+
   return (
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -148,31 +230,118 @@ const RideOffers = () => {
             <Dropdown.Item eventKey="5">5</Dropdown.Item>
             <Dropdown.Item eventKey="10">10</Dropdown.Item>
             <Dropdown.Item eventKey="20">20</Dropdown.Item>
-            <Dropdown.Item eventKey={totalPages * pageSize}>All</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
+
+      {/* Search Bar */}
+      <div className="input-group mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by keyword"
+          value={searchKeyword}
+          onChange={handleSearchKeywordChange}
+        />
+        <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
+          Search
+        </button>
+      </div>
+
+      {/* Filter Fields */}
+      <div className="row mb-3">
+        <div className="col">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Start Location"
+            value={filterStartLocation}
+            onChange={handleFilterStartLocationChange}
+          />
+        </div>
+        <div className="col">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="End Location"
+            value={filterEndLocation}
+            onChange={handleFilterEndLocationChange}
+          />
+        </div>
+        <div className="col">
+          <input
+            type="datetime-local"
+            className="form-control"
+            value={filterDepartureTime}
+            onChange={handleFilterDepartureTimeChange}
+          />
+        </div>
+        <div className="col">
+          <button className="btn btn-outline-secondary" type="button" onClick={handleFilter}>
+            Filter
+          </button>
+        </div>
+      </div>
+
       {error && <Alert variant="danger">{error}</Alert>}
       {loading ? (
-        <Spinner animation="border" />
+        <div className="text-center">
+          <Spinner animation="border" />
+        </div>
       ) : (
         <div className="list-group">
           {rideOffers.map((offer) => (
-            <div key={offer.id} className="list-group-item list-group-item-action" onClick={() => handleViewDetails(offer)}>
+            <div
+              key={offer.id}
+              className="list-group-item list-group-item-action"
+              onClick={() => handleViewDetails(offer)}
+            >
               <div className="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 className="mb-1">Ride from {offer.startLocation} to {offer.endLocation}</h5>
-                  <p className="mb-1">Departure Time: {new Date(offer.departureTime).toLocaleString()}</p>
+                  <h5 className="mb-1">
+                    Ride from {offer.startLocation} to {offer.endLocation}
+                  </h5>
+                  <p className="mb-1">
+                    Departure Time: {new Date(offer.departureTime).toLocaleString()}
+                  </p>
                   <p className="mb-1">Available Seats: {offer.availableSeats}</p>
                 </div>
                 <div>
                   {currentUser && currentUser.toLowerCase() === offer.creatorEmail.toLowerCase() ? (
                     <>
-                      <Button variant="warning" size="sm" className="me-2" onClick={(e) => { e.stopPropagation(); navigate(`/ride-offers/edit/${offer.id}`, { state: { offer } }) }}>Edit</Button>
-                      <Button variant="danger" size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/ride-offers/delete/${offer.id}`, { state: { offer } }) }}>Delete</Button>
+                      <Button
+                        variant="warning"
+                        size="sm"
+                        className="me-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/ride-offers/edit/${offer.id}`, { state: { offer } });
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/ride-offers/delete/${offer.id}`, { state: { offer } });
+                        }}
+                      >
+                        Delete
+                      </Button>
                     </>
                   ) : (
-                    <Button variant="success" size="sm" onClick={(e) => { e.stopPropagation(); handleRequestToJoin(offer) }}>Request to Join</Button>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRequestToJoin(offer);
+                      }}
+                    >
+                      Request to Join
+                    </Button>
                   )}
                 </div>
               </div>
@@ -181,13 +350,31 @@ const RideOffers = () => {
         </div>
       )}
       <div className="d-flex justify-content-center mt-3">
-        <Button variant="secondary" size="sm" className="me-2" onClick={handleFirstPage} disabled={firstPage}>&lt;&lt;</Button>
-        <Button variant="secondary" size="sm" className="me-2" onClick={handlePreviousPage} disabled={firstPage}>&lt;</Button>
-        {[...Array(totalPages).keys()].map(pageNumber => (
-          (pageNumber === currentPage || pageNumber === currentPage - 1 || pageNumber === currentPage + 1) && (
+        <Button
+          variant="secondary"
+          size="sm"
+          className="me-2"
+          onClick={handleFirstPage}
+          disabled={firstPage}
+        >
+          &lt;&lt;
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="me-2"
+          onClick={handlePreviousPage}
+          disabled={firstPage}
+        >
+          &lt;
+        </Button>
+        {[...Array(totalPages).keys()].map((pageNumber) =>
+          (pageNumber === currentPage ||
+            pageNumber === currentPage - 1 ||
+            pageNumber === currentPage + 1) && (
             <Button
               key={pageNumber}
-              variant={pageNumber === currentPage ? "primary" : "secondary"}
+              variant={pageNumber === currentPage ? 'primary' : 'secondary'}
               size="sm"
               className="me-2"
               onClick={() => setCurrentPage(pageNumber)}
@@ -195,9 +382,24 @@ const RideOffers = () => {
               {pageNumber + 1}
             </Button>
           )
-        ))}
-        <Button variant="secondary" size="sm" className="me-2" onClick={handleNextPage} disabled={lastPage}>&gt;</Button>
-        <Button variant="secondary" size="sm" onClick={handleLastPage} disabled={lastPage}>&gt;&gt;</Button>
+        )}
+        <Button
+          variant="secondary"
+          size="sm"
+          className="me-2"
+          onClick={handleNextPage}
+          disabled={lastPage}
+        >
+          &gt;
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={handleLastPage}
+          disabled={lastPage}
+        >
+          &gt;&gt;
+        </Button>
       </div>
     </div>
   );
