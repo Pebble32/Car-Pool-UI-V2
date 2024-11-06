@@ -1,38 +1,106 @@
 // src/components/Navigation.js
 import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Container, NavDropdown, Image, Spinner } from 'react-bootstrap';
 import ApiClient from '../generated-api/src/ApiClient';
 import { AuthContext } from '../context/AuthContext';
+import { DEFAULT_PROFILE_PICTURE } from '../constants'; // Import the default profile picture
 
 const Navigation = () => {
-  const { isLoggedIn, setIsLoggedIn, userName, setUserName } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, userName, setUserName, profilePicture, setProfilePicture } = useContext(AuthContext);
   const apiClient = new ApiClient();
   apiClient.basePath = 'http://localhost:8088/api/v1';
 
   const checkLoginStatus = () => {
-    apiClient.callApi('/auth/check', 'GET', {}, {}, {}, {}, null, [], ['text/plain'], ['text/plain'], null, null, (error, data, response) => {
-      if (error || !response || !response.text) {
-        setIsLoggedIn(false);
-      } else {
-        const userEmail = response.text;
-        setIsLoggedIn(userEmail.length > 0);
-        setUserName(userEmail.split('@')[0]);
+    apiClient.callApi(
+      '/auth/check',
+      'GET',
+      {},
+      {},
+      {},
+      {},
+      null,
+      [],
+      [], // No expected response types
+      [],
+      null,
+      null,
+      (error, data, response) => {
+        if (error || !response || !response.text) {
+          setIsLoggedIn(false);
+        } else {
+          const userEmail = response.text.trim();
+          if (userEmail.length > 0) {
+            setIsLoggedIn(true);
+            setUserName(userEmail.split('@')[0]);
+            // Fetch the profile picture
+            fetchProfilePicture();
+          } else {
+            setIsLoggedIn(false);
+          }
+        }
       }
-    });
+    );
+  };
+
+  const fetchProfilePicture = () => {
+    apiClient.callApi(
+      '/users/profile-picture',
+      'GET',
+      {},
+      {},
+      {},
+      {},
+      null,
+      [],
+      [], // No expected response types
+      [],
+      null,
+      null,
+      (error, data, response) => {
+        if (error) {
+          console.error('Error fetching profile picture:', error);
+          setProfilePicture(null); // Optionally, set to null or a default image
+        } else {
+          try {
+            const base64String = response.text.trim();
+            setProfilePicture(base64String);
+          } catch (e) {
+            console.error('Error handling profile picture response:', e);
+            setProfilePicture(null);
+          }
+        }
+      }
+    );
   };
 
   useEffect(() => {
     checkLoginStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {
-    apiClient.callApi('/auth/logout', 'POST', {}, {}, {}, {}, null, [], ['application/json'], ['application/json'], null, null, (error) => {
-      if (!error) {
-        setIsLoggedIn(false);
-        setUserName('');
+    apiClient.callApi(
+      '/auth/logout',
+      'POST',
+      {},
+      {},
+      {},
+      {},
+      null,
+      [],
+      [], // No expected response types
+      [],
+      null,
+      null,
+      (error, data, response) => {
+        if (!error) {
+          setIsLoggedIn(false);
+          setUserName('');
+          setProfilePicture(null);
+        }
       }
-    });
+    );
   };
 
   return (
@@ -45,7 +113,30 @@ const Navigation = () => {
             <Nav.Link as={Link} to="/ride-offers">Ride Offers</Nav.Link>
             <Nav.Link as={Link} to="/create-ride-offer">Create Ride Offer</Nav.Link>
             {isLoggedIn ? (
-              <NavDropdown title={userName || 'User'} id="user-dropdown">
+              <NavDropdown 
+                title={
+                  profilePicture ? (
+                    <Image 
+                      src={`data:image/jpeg;base64,${profilePicture}`} // Adjust MIME type if necessary
+                      roundedCircle 
+                      width={30} 
+                      height={30} 
+                      alt="Profile" 
+                      className="me-2"
+                    />
+                  ) : (
+                    <Image 
+                      src={DEFAULT_PROFILE_PICTURE} // Use the default profile picture
+                      roundedCircle 
+                      width={30} 
+                      height={30} 
+                      alt="Profile Placeholder" 
+                      className="me-2"
+                    />
+                  )
+                } 
+                id="user-dropdown"
+              >
                 <NavDropdown.Item as={Link} to="/profile-managment">Profile</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-requests">My Ride Requests</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-offers">My Ride Offers</NavDropdown.Item>

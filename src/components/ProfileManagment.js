@@ -1,16 +1,18 @@
 // src/components/ProfileManagement.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ApiClient from '../generated-api/src/ApiClient';
 import { Form, Button, Spinner, Alert, Container, Row, Col, Image } from 'react-bootstrap';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const ProfileManagement = () => {
+  const { setProfilePicture, profilePicture } = useContext(AuthContext); // Destructure both setProfilePicture and profilePicture
+
   const [userInfo, setUserInfo] = useState({
     email: '',
     firstName: '',
     lastName: '',
     phoneNumber: '',
   });
-  const [profilePicture, setProfilePicture] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingPicture, setLoadingPicture] = useState(true);
   const [error, setError] = useState(null);
@@ -49,7 +51,7 @@ const ProfileManagement = () => {
       {},
       null,
       [],
-      [], // Remove 'application/json' from expected response types if response is raw
+      [], // No expected content types specified
       [],
       null,
       null,
@@ -91,23 +93,24 @@ const ProfileManagement = () => {
       {},
       null,
       [],
-      [], // Remove 'application/json' from expected response types if response is raw
+      [], // No expected content types specified
       [],
       null,
       null,
       (error, data, response) => {
         if (error) {
           console.error('Error fetching profile picture:', error);
-          setError('Failed to fetch profile picture.');
+          setProfilePicture(null); // Optionally, set to null or a default image
           setLoadingPicture(false);
         } else {
           try {
-            // If server returns raw base64 string without quotes
+            // Assume response.text is the raw base64 string
             const base64String = response.text.trim();
             setProfilePicture(base64String);
           } catch (e) {
             console.error('Error handling profile picture response:', e);
             setError('Invalid profile picture response format.');
+            setProfilePicture(null);
           }
           setLoadingPicture(false);
         }
@@ -146,20 +149,34 @@ const ProfileManagement = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await fetch('http://localhost:8088/api/v1/users/profile-picture', {
+      const uploadResponse = await fetch('http://localhost:8088/api/v1/users/profile-picture', {
         method: 'POST',
         body: formData,
         credentials: 'include', // Include cookies if your API requires authentication via cookies
         // Note: Do NOT set the 'Content-Type' header manually!
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
         throw new Error(errorText || 'Failed to upload profile picture.');
       }
 
       console.log('Profile picture uploaded successfully');
-      fetchProfilePicture(); // Refresh the profile picture
+
+      // Fetch the updated profile picture
+      const updatedResponse = await fetch('http://localhost:8088/api/v1/users/profile-picture', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!updatedResponse.ok) {
+        const errorText = await updatedResponse.text();
+        throw new Error(errorText || 'Failed to fetch updated profile picture.');
+      }
+
+      const updatedBase64 = await updatedResponse.text();
+      setProfilePicture(updatedBase64); // Update AuthContext with new profile picture
+
       setSuccessMessage('Profile picture updated successfully.');
       setLoadingPicture(false);
     } catch (err) {
