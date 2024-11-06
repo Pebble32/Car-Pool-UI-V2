@@ -49,8 +49,8 @@ const ProfileManagement = () => {
       {},
       null,
       [],
-      ['application/json'],
-      ['application/json'],
+      [], // Remove 'application/json' from expected response types if response is raw
+      [],
       null,
       null,
       (error, data, response) => {
@@ -60,6 +60,7 @@ const ProfileManagement = () => {
           setLoadingUser(false);
         } else {
           try {
+            // Assuming server returns JSON object
             const parsedData = JSON.parse(response.text);
             setUserInfo({
               email: parsedData.email || '',
@@ -90,8 +91,8 @@ const ProfileManagement = () => {
       {},
       null,
       [],
-      ['application/json'],
-      ['application/json'],
+      [], // Remove 'application/json' from expected response types if response is raw
+      [],
       null,
       null,
       (error, data, response) => {
@@ -101,10 +102,11 @@ const ProfileManagement = () => {
           setLoadingPicture(false);
         } else {
           try {
-            const parsedData = JSON.parse(response.text);
-            setProfilePicture(parsedData); // Assuming the response contains the image URL
+            // If server returns raw base64 string without quotes
+            const base64String = response.text.trim();
+            setProfilePicture(base64String);
           } catch (e) {
-            console.error('Error parsing profile picture response:', e);
+            console.error('Error handling profile picture response:', e);
             setError('Invalid profile picture response format.');
           }
           setLoadingPicture(false);
@@ -131,8 +133,8 @@ const ProfileManagement = () => {
     }));
   };
 
-  // Handle profile picture upload
-  const handleProfilePictureUpload = (e) => {
+  // Handle profile picture upload using fetch
+  const handleProfilePictureUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -141,32 +143,30 @@ const ProfileManagement = () => {
 
     setLoadingPicture(true);
     setError(null);
-    apiClient.callApi(
-      '/users/profile-picture',
-      'POST',
-      {},
-      {},
-      { 'Content-Type': 'multipart/form-data' },
-      {},
-      formData,
-      [],
-      [],
-      [],
-      null,
-      null,
-      (error, data, response) => {
-        if (error) {
-          console.error('Error uploading profile picture:', error);
-          setError('Failed to upload profile picture.');
-          setLoadingPicture(false);
-        } else {
-          console.log('Profile picture uploaded successfully');
-          fetchProfilePicture(); // Refresh the profile picture
-          setSuccessMessage('Profile picture updated successfully.');
-          setLoadingPicture(false);
-        }
+    setSuccessMessage(null);
+
+    try {
+      const response = await fetch('http://localhost:8088/api/v1/users/profile-picture', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include', // Include cookies if your API requires authentication via cookies
+        // Note: Do NOT set the 'Content-Type' header manually!
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to upload profile picture.');
       }
-    );
+
+      console.log('Profile picture uploaded successfully');
+      fetchProfilePicture(); // Refresh the profile picture
+      setSuccessMessage('Profile picture updated successfully.');
+      setLoadingPicture(false);
+    } catch (err) {
+      console.error('Error uploading profile picture:', err);
+      setError(err.message || 'Failed to upload profile picture.');
+      setLoadingPicture(false);
+    }
   };
 
   // Handle editing user information (dummy implementation)
@@ -354,9 +354,21 @@ const ProfileManagement = () => {
           ) : (
             <>
               {profilePicture ? (
-                <Image src={profilePicture} roundedCircle width={150} height={150} alt="Profile" />
+                <Image 
+                  src={`data:image/jpeg;base64,${profilePicture}`} // Adjust MIME type if necessary
+                  roundedCircle 
+                  width={150} 
+                  height={150} 
+                  alt="Profile" 
+                />
               ) : (
-                <Image src="https://via.placeholder.com/150" roundedCircle width={150} height={150} alt="Profile Placeholder" />
+                <Image 
+                  src="https://via.placeholder.com/150" 
+                  roundedCircle 
+                  width={150} 
+                  height={150} 
+                  alt="Profile Placeholder" 
+                />
               )}
               <Form.Group controlId="formProfilePicture" className="mt-3">
                 <Form.Label>Upload New Profile Picture</Form.Label>
