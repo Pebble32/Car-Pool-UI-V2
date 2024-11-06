@@ -12,6 +12,7 @@ import Navigation from './components/Navigation';
 import CreateRideOffer from './components/CreateRideOffer';
 import ViewUserRideRequests from './components/ViewUsersRideRequests';
 import Home from './components/Home';
+import ProfileManagement from './components/ProfileManagment';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/ride-offers/edit/:id" element={<RideOfferEdit />} />
             <Route path="/my-ride-requests" element={<ViewUserRideRequests />} />
             <Route path="/create-ride-offer" element={<CreateRideOffer />} />
+            <Route path="/profile-managment" element={<ProfileManagement />} />
           </Routes>
         </div>
       </Router>

@@ -46,6 +46,7 @@ const Navigation = () => {
             <Nav.Link as={Link} to="/create-ride-offer">Create Ride Offer</Nav.Link>
             {isLoggedIn ? (
               <NavDropdown title={userName || 'User'} id="user-dropdown">
+                <NavDropdown.Item as={Link} to="/profile-managment">Profile</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-requests">My Ride Requests</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-offers">My Ride Offers</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/user-details">User Details</NavDropdown.Item>
