@@ -22,29 +22,29 @@ const ViewUsersHistory = () => {
   const [actionLoading, setActionLoading] = useState(false); // To handle loading state for delete actions
 
   const apiClient = new ApiClient();
-  apiClient.basePath = 'http://localhost:8088/api/v1';
+  apiClient.basePath = 'http://localhost:8088/api/v1'; // Ensure this matches your Swagger server URL
 
   const navigate = useNavigate();
 
-  // Fetch user's ride history
+  // Function to fetch user's ride history manually
   const fetchRideHistory = () => {
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
 
     apiClient.callApi(
-      '/offers/user-rideHistory',
-      'GET',
-      {},
-      {},
-      {},
-      {},
-      null,
-      [],
-      ['application/json'],
-      ['application/json'],
-      null,
-      null,
+      '/offers/user-rideHistory', // Endpoint
+      'GET', // Method
+      {}, // Path parameters
+      {}, // Query parameters
+      {}, // Header parameters
+      {}, // Form parameters
+      null, // Body
+      [], // Auth names
+      ['application/json'], // Content types
+      ['application/json'], // Accepts
+      null, // Return type
+      null, // Axios config
       (error, data, response) => {
         if (error) {
           console.error('Error fetching ride history:', error);
@@ -52,7 +52,7 @@ const ViewUsersHistory = () => {
           setLoading(false);
         } else {
           try {
-            const parsedData = JSON.parse(response.text);
+            const parsedData = data || JSON.parse(response.text);
             setRideHistory(parsedData);
           } catch (e) {
             console.error('Error parsing ride history response:', e);
@@ -60,6 +60,46 @@ const ViewUsersHistory = () => {
           }
           setLoading(false);
         }
+      }
+    );
+  };
+
+  // Function to delete a ride offer manually
+  const deleteRideOffer = (rideId) => {
+    setActionLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    // Construct the DELETE endpoint with the rideId
+    const deleteEndpoint = `/offers/details/${rideId}`;
+
+    apiClient.callApi(
+      deleteEndpoint, // Endpoint with path parameter
+      'DELETE', // Method
+      {}, // Path parameters are already included in the endpoint
+      {}, // Query parameters
+      {}, // Header parameters
+      {}, // Form parameters
+      null, // Body
+      [], // Auth names
+      ['application/json'], // Content types
+      ['application/json'], // Accepts
+      null, // Return type
+      null, // Axios config
+      (error, data, response) => {
+        if (error) {
+          console.error('Error deleting ride offer:', error);
+          if (response && response.status === 404) {
+            setError('Ride offer not found.');
+          } else {
+            setError('Failed to delete ride offer.');
+          }
+        } else {
+          console.log('Ride offer deleted successfully');
+          setSuccessMessage('Ride offer deleted successfully.');
+          fetchRideHistory(); // Refresh the ride history
+        }
+        setActionLoading(false);
       }
     );
   };
@@ -75,35 +115,7 @@ const ViewUsersHistory = () => {
       'Are you sure you want to delete this ride offer? This action cannot be undone.'
     );
     if (confirmDelete) {
-      setActionLoading(true);
-      setError(null);
-      setSuccessMessage(null);
-
-      apiClient.callApi(
-        `/offers/deleteRideOffer/${rideId}`,
-        'DELETE',
-        {},
-        {},
-        {},
-        {},
-        null,
-        [],
-        ['application/json'],
-        ['application/json'],
-        null,
-        null,
-        (error, data, response) => {
-          if (error) {
-            console.error('Error deleting ride offer:', error);
-            setError('Failed to delete ride offer.');
-          } else {
-            console.log('Ride offer deleted successfully');
-            setSuccessMessage('Ride offer deleted successfully.');
-            fetchRideHistory(); // Refresh the ride history
-          }
-          setActionLoading(false);
-        }
-      );
+      deleteRideOffer(rideId);
     }
   };
 

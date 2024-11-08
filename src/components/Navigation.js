@@ -140,7 +140,6 @@ const Navigation = () => {
                 <NavDropdown.Item as={Link} to="/profile-managment">Profile</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-requests">My Ride Requests</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/my-ride-offers">My Ride Offers</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/user-details">User Details</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
               </NavDropdown>
