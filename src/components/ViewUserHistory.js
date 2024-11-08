@@ -1,10 +1,17 @@
 // src/components/ViewUsersHistory.js
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ApiClient from '../generated-api/src/ApiClient';
-import RideOfferApi from '../generated-api/src/api/RideOfferApi';
-import { Table, Button, Spinner, Alert, Container, Modal, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import {
+  Table,
+  Button,
+  Spinner,
+  Alert,
+  Container,
+  Tooltip,
+  OverlayTrigger,
+} from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const ViewUsersHistory = () => {
@@ -12,13 +19,10 @@ const ViewUsersHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedRideId, setSelectedRideId] = useState(null);
   const [actionLoading, setActionLoading] = useState(false); // To handle loading state for delete actions
 
   const apiClient = new ApiClient();
   apiClient.basePath = 'http://localhost:8088/api/v1';
-  const rideOfferApi = new RideOfferApi(apiClient);
 
   const navigate = useNavigate();
 
@@ -28,76 +32,79 @@ const ViewUsersHistory = () => {
     setError(null);
     setSuccessMessage(null);
 
-    rideOfferApi.userRideHistory((error, data, response) => {
-      if (error) {
-        console.error('Error fetching ride history:', error);
-        setError('Failed to fetch ride history.');
-        setLoading(false);
-      } else {
-        try {
-          const parsedData = JSON.parse(response.text);
-          setRideHistory(parsedData);
-        } catch (e) {
-          console.error('Error parsing ride history response:', e);
-          setError('Invalid response format.');
+    apiClient.callApi(
+      '/offers/user-rideHistory',
+      'GET',
+      {},
+      {},
+      {},
+      {},
+      null,
+      [],
+      ['application/json'],
+      ['application/json'],
+      null,
+      null,
+      (error, data, response) => {
+        if (error) {
+          console.error('Error fetching ride history:', error);
+          setError('Failed to fetch ride history.');
+          setLoading(false);
+        } else {
+          try {
+            const parsedData = JSON.parse(response.text);
+            setRideHistory(parsedData);
+          } catch (e) {
+            console.error('Error parsing ride history response:', e);
+            setError('Invalid response format.');
+          }
+          setLoading(false);
         }
-        setLoading(false);
       }
-    });
+    );
   };
 
   // Handle edit button click
-  const handleEditClick = (rideId) => {
-    // Fetch the ride offer details to pass as state
-    rideOfferApi.details(rideId, (error, data, response) => {
-      if (error) {
-        console.error('Error fetching ride offer details for edit:', error);
-        setError('Failed to fetch ride offer details.');
-      } else {
-        try {
-          const parsedData = JSON.parse(response.text);
-          navigate(`/ride-offers/edit/${rideId}`, { state: { offer: parsedData } });
-        } catch (e) {
-          console.error('Error parsing ride offer details response:', e);
-          setError('Invalid ride offer details format.');
-        }
-      }
-    });
+  const handleEditClick = (ride) => {
+    navigate(`/ride-offers/edit/${ride.id}`, { state: { offer: ride } });
   };
 
-  // Handle delete button click (opens modal)
+  // Handle delete button click
   const handleDeleteClick = (rideId) => {
-    setSelectedRideId(rideId);
-    setShowDeleteModal(true);
-  };
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this ride offer? This action cannot be undone.'
+    );
+    if (confirmDelete) {
+      setActionLoading(true);
+      setError(null);
+      setSuccessMessage(null);
 
-  // Confirm deletion of ride offer
-  const confirmDelete = () => {
-    if (selectedRideId === null) return;
-
-    setActionLoading(true);
-    setError(null);
-    setSuccessMessage(null);
-
-    rideOfferApi.deleteRideOffer(selectedRideId, (error, data, response) => {
-      if (error) {
-        console.error('Error deleting ride offer:', error);
-        setError('Failed to delete ride offer.');
-      } else {
-        console.log('Ride offer deleted successfully');
-        setSuccessMessage('Ride offer deleted successfully.');
-        fetchRideHistory(); // Refresh the ride history
-      }
-      setActionLoading(false);
-      setShowDeleteModal(false);
-      setSelectedRideId(null);
-    });
-  };
-
-  // Close the delete confirmation modal
-  const handleCloseModal = () => {
-    setShowDeleteModal(false);
-    setSelectedRideId(null);
+      apiClient.callApi(
+        `/offers/deleteRideOffer/${rideId}`,
+        'DELETE',
+        {},
+        {},
+        {},
+        {},
+        null,
+        [],
+        ['application/json'],
+        ['application/json'],
+        null,
+        null,
+        (error, data, response) => {
+          if (error) {
+            console.error('Error deleting ride offer:', error);
+            setError('Failed to delete ride offer.');
+          } else {
+            console.log('Ride offer deleted successfully');
+            setSuccessMessage('Ride offer deleted successfully.');
+            fetchRideHistory(); // Refresh the ride history
+          }
+          setActionLoading(false);
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -155,7 +162,7 @@ const ViewUsersHistory = () => {
                         variant="outline-primary"
                         size="sm"
                         className="me-2"
-                        onClick={() => handleEditClick(ride.id)}
+                        onClick={() => handleEditClick(ride)}
                         disabled={actionLoading}
                       >
                         <FaEdit />
@@ -189,34 +196,6 @@ const ViewUsersHistory = () => {
           </tbody>
         </Table>
       )}
-
-      {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={handleCloseModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Ride Offer</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this ride offer? This action cannot be undone.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal} disabled={actionLoading}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={confirmDelete} disabled={actionLoading}>
-            {actionLoading ? (
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-            ) : (
-              'Delete'
-            )}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </Container>
   );
 };
