@@ -6,6 +6,7 @@ const Home = () => {
   const animationRef = useRef(null);
   const [userCount, setUserCount] = useState(0);
   const [providerCount, setProviderCount] = useState(0);
+  const [activeRideCount, setActiveRideCount] = useState(0); // New state variable
   let followMouse = true;
 
   useEffect(() => {
@@ -27,6 +28,16 @@ const Home = () => {
       })
       .catch((error) => {
         console.error('Error fetching providers:', error);
+      });
+
+    // Fetch total number of active rides
+    fetch('http://localhost:8088/api/v1/offers/filter?page=0&size=1&status=AVAILABLE')
+      .then((response) => response.json())
+      .then((data) => {
+        setActiveRideCount(data.totalElements);
+      })
+      .catch((error) => {
+        console.error('Error fetching active rides:', error);
       });
   }, []);
 
@@ -163,6 +174,9 @@ const Home = () => {
           <p className="lead" style={{ fontSize: '1rem' }}>
             We have <strong>{userCount}</strong> users with{' '}
             <strong>{providerCount}</strong> people offering rides.
+          </p>
+          <p className="lead" style={{ fontSize: '1rem' }}>
+            Currently, we have <strong>{activeRideCount}</strong> active rides available.
           </p>
           <Button as={Link} to="/register" variant="primary" size="lg" className="mt-3">
             Get Started
