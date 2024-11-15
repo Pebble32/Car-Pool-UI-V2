@@ -14,6 +14,7 @@ const RideOffers = () => {
   const [rideOffers, setRideOffers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
@@ -180,6 +181,7 @@ const RideOffers = () => {
           setError('Failed to request to join ride offer.');
         } else {
           console.log('Request to join ride offer sent successfully:', data);
+          setSuccessMessage('Request to join ride offer sent successfully.');
           fetchRideOffers(currentPage, pageSize);
         }
       }
@@ -330,6 +332,7 @@ const RideOffers = () => {
       </Form>
 
       {error && <Alert variant="danger">{error}</Alert>}
+      {successMessage && <Alert variant="success">{successMessage}</Alert>}
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" />
