@@ -29,7 +29,7 @@ function App() {
             <Route path="/ride-offers" element={<RideOffers />} />
             <Route path="/ride-offers/:id" element={<RideOfferDetails />} />
             <Route path="/ride-offers/edit/:id" element={<RideOfferEdit />} />
-            <Route path="//my-ride-offers" element={<ViewUsersHistory />} />
+            <Route path="/my-ride-offers" element={<ViewUsersHistory />} />
             <Route path="/my-ride-requests" element={<ViewUserRideRequests />} />
             <Route path="/create-ride-offer" element={<CreateRideOffer />} />
             <Route path="/profile-managment" element={<ProfileManagement />} />
