@@ -19,6 +19,12 @@ const ProfileManagement = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   
   // States for editing user info
+  const [infoChanges, setChanges] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+  });
+
   const [editLoading, setEditLoading] = useState(false);
   
   // States for changing password
@@ -186,24 +192,27 @@ const ProfileManagement = () => {
     }
   };
 
-  // Handle editing user information (dummy implementation)
+  // Handle editing user information
   const handleEditUserInfo = (e) => {
     e.preventDefault();
     setEditLoading(true);
     setError(null);
     setSuccessMessage(null);
-    
-    // TODO: Implement the actual API call when the endpoint is available
-    // Example:
-    /*
+
+    const payload = {
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      phoneNumber: userInfo.phoneNumber,
+    };
+
     apiClient.callApi(
-      '/users/update',
+      'users/update',
       'PUT',
       {},
       {},
       { 'Content-Type': 'application/json' },
       {},
-      JSON.stringify(userInfo),
+        JSON.stringify(payload),
       [],
       ['application/json'],
       ['application/json'],
@@ -221,14 +230,6 @@ const ProfileManagement = () => {
         setEditLoading(false);
       }
     );
-    */
-    
-    // Dummy code since endpoint is not ready
-    setTimeout(() => {
-      console.log('Edit user info (dummy)');
-      setSuccessMessage('User information updated successfully (dummy).');
-      setEditLoading(false);
-    }, 1000);
   };
 
   // Handle changing password (dummy implementation)
@@ -245,16 +246,13 @@ const ProfileManagement = () => {
       return;
     }
 
-    // TODO: Implement the actual API call when the endpoint is available
-    // Example:
-    /*
     const payload = {
       oldPassword: passwords.oldPassword,
       newPassword: passwords.newPassword,
     };
     
     apiClient.callApi(
-      '/users/change-password',
+      'users/update/password',
       'PUT',
       {},
       {},
@@ -282,19 +280,6 @@ const ProfileManagement = () => {
         setPasswordLoading(false);
       }
     );
-    */
-    
-    // Dummy code since endpoint is not ready
-    setTimeout(() => {
-      console.log('Change password (dummy)');
-      setSuccessMessage('Password changed successfully (dummy).');
-      setPasswordLoading(false);
-      setPasswords({
-        oldPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-      });
-    }, 1000);
   };
 
   return (
