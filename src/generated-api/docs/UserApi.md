@@ -1,6 +1,6 @@
 # CarPoolApi.UserApi
 
-All URIs are relative to *http://localhost:8088/api/v1*
+All URIs are relative to *https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
