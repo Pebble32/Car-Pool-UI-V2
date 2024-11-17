@@ -13,7 +13,7 @@ const ViewUsersRideRequests = () => {
   const [statusLoading, setStatusLoading] = useState(false); // To handle loading state for status changes
 
   const apiClient = new ApiClient();
-  apiClient.basePath = 'http://localhost:8088/api/v1';
+  apiClient.basePath = 'https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1';
 
   // Fetch ride requests
   const fetchRideRequests = () => {

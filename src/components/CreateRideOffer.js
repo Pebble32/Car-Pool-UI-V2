@@ -8,7 +8,7 @@ import RideOfferRequest from '../generated-api/src/model/RideOfferRequest';
 const CreateRideOffer = () => {
   const navigate = useNavigate();
   const apiClient = new ApiClient();
-  apiClient.basePath = 'http://localhost:8088/api/v1';
+  apiClient.basePath = 'https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/';
   const rideOfferApi = new RideOfferApi(apiClient);
 
   const [newOffer, setNewOffer] = useState({

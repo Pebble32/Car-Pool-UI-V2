@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Logout = () => {
   const apiClient = new ApiClient();
-  apiClient.basePath = 'http://localhost:8088/api/v1';
+  apiClient.basePath = 'https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/';
   const authApi = new AuthApi(apiClient);
   const navigate = useNavigate();
 
