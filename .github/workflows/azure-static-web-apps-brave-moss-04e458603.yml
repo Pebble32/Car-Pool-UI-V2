@@ -19,6 +19,9 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Set Safe Directory for Git
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
