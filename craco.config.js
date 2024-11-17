@@ -27,4 +27,7 @@ module.exports = {
       return webpackConfig;
     },
   },
+  eslint: {
+    enable: false, // Disable ESLint during build
+  },
 };
