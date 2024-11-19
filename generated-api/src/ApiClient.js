@@ -33,11 +33,11 @@ class ApiClient {
      * Overrides the default value set in spec file if present
      * @param {String} basePath
      */
-    constructor(basePath = 'https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1') {
+    constructor(basePath = 'https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1') {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1
+         * @default https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1
          */
         this.basePath = basePath.replace(/\/+$/, '');
 
@@ -592,7 +592,7 @@ class ApiClient {
     hostSettings() {
         return [
             {
-              'url': "https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1",
+              'url': "https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1",
               'description': "Generated server url",
             }
       ];

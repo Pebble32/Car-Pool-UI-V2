@@ -10,7 +10,7 @@ const RideOfferDetails = () => {
   const navigate = useNavigate();
   const { offer } = location.state;
   const apiClient = new ApiClient();
-  apiClient.basePath = 'http://localhost:8088/api/v1';
+  apiClient.basePath = 'https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1';
   const rideOfferApi = new RideOfferApi(apiClient);
 
   const [isOwner, setIsOwner] = useState(false);

@@ -36,7 +36,7 @@ const ProfileManagement = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   
   const apiClient = new ApiClient();
-  apiClient.basePath = 'https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1';
+  apiClient.basePath = 'https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1';
 
   useEffect(() => {
     fetchUserInfo();
@@ -155,7 +155,7 @@ const ProfileManagement = () => {
     setSuccessMessage(null);
 
     try {
-      const uploadResponse = await fetch('https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/users/profile-picture', {
+      const uploadResponse = await fetch('https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1/users/profile-picture', {
         method: 'POST',
         body: formData,
         credentials: 'include', // Include cookies if your API requires authentication via cookies
@@ -170,7 +170,7 @@ const ProfileManagement = () => {
       console.log('Profile picture uploaded successfully');
 
       // Fetch the updated profile picture
-      const updatedResponse = await fetch('https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/users/profile-picture', {
+      const updatedResponse = await fetch('https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1/users/profile-picture', {
         method: 'GET',
         credentials: 'include',
       });

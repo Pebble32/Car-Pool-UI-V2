@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     // Fetch total number of users
-    fetch('https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/users/all/paginated?page=0&size=1')
+    fetch('https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1/users/all/paginated?page=0&size=1')
       .then((response) => response.json())
       .then((data) => {
         setUserCount(data.totalElements);
@@ -21,7 +21,7 @@ const Home = () => {
       });
 
     // Fetch total number of providers
-    fetch('https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/offers/all/providers')
+    fetch('https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1/offers/all/providers')
       .then((response) => response.json())
       .then((data) => {
         setProviderCount(data.length);
@@ -31,7 +31,7 @@ const Home = () => {
       });
 
     // Fetch total number of active rides
-    fetch('https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/offers/filter?page=0&size=1&status=AVAILABLE')
+    fetch('https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1/offers/filter?page=0&size=1&status=AVAILABLE')
       .then((response) => response.json())
       .then((data) => {
         setActiveRideCount(data.totalElements);

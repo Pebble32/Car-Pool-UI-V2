@@ -117,7 +117,7 @@ api.authenticate(authenticationRequest, callback);
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost:8088/api/v1*
+All URIs are relative to *https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

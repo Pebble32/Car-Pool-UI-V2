@@ -9,7 +9,7 @@ import { DEFAULT_PROFILE_PICTURE } from '../constants'; // Import the default pr
 const Navigation = () => {
   const { isLoggedIn, setIsLoggedIn, userName, setUserName, profilePicture, setProfilePicture } = useContext(AuthContext);
   const apiClient = new ApiClient();
-  apiClient.basePath = 'https://carpool-backend-app-fhg8hbadhqejduhp.northeurope-01.azurewebsites.net/api/v1/';
+  apiClient.basePath = 'https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1';
 
   const checkLoginStatus = () => {
     apiClient.callApi(

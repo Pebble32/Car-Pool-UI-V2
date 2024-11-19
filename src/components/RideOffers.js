@@ -8,7 +8,7 @@ import { Button, Dropdown, ButtonGroup, Alert, Spinner, Form } from 'react-boots
 const RideOffers = () => {
   const navigate = useNavigate();
   const apiClient = new ApiClient();
-  apiClient.basePath = 'http://localhost:8088/api/v1';
+  apiClient.basePath = 'https://carpool-backend-application-fdfve8dcc2h7egcg.northeurope-01.azurewebsites.net/api/v1';
   const rideOfferApi = new RideOfferApi(apiClient);
 
   const [rideOffers, setRideOffers] = useState([]);

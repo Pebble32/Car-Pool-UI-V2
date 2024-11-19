@@ -28,6 +28,6 @@ module.exports = {
     },
   },
   eslint: {
-    enable: false, // Disable ESLint during build
+    enable: false, 
   },
 };
