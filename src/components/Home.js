@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import saveMoneyImg from '../assets/savemoneyimg.png';
 import reduceEmissionImg from '../assets/reduceemission.png';
 
-
 const Home = () => {
   const animationRef = useRef(null);
   const [userCount, setUserCount] = useState(0);
@@ -56,8 +55,12 @@ const Home = () => {
 
     function setCanvasSize() {
       const canvasContainer = canvas.parentElement;
-      canvas.width = canvasContainer.offsetWidth;
-      canvas.height = canvasContainer.offsetHeight;
+      const width = canvasContainer.offsetWidth;
+      const height = canvasContainer.offsetHeight;
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
     }
 
     setCanvasSize();
@@ -179,13 +182,26 @@ const Home = () => {
           backgroundColor: '#e5e3dc',
           color: '#333',
           height: 'auto',
+          boxShadow: '0 10px 10px -10px rgba(0, 0, 0, 0.2)',
         }}
       >
         <canvas
           ref={animationRef}
-          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+          style={{ position: 'absolute', top: 0, left: 0 }}
         ></canvas>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+        {/* Gradient Overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '100px',
+            background: 'linear-gradient(to top, #e5e3dc 0%, rgba(229, 227, 220, 0) 100%)',
+            zIndex: 1,
+          }}
+        ></div>
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <h1 className="display-4 mb-4" style={{ fontWeight: 'bold' }}>
             Welcome to Háskóli Íslands Carpooling Service!
           </h1>
@@ -203,16 +219,15 @@ const Home = () => {
             Get Started
           </Button>
         </div>
-        {/* Features Section Styled Like Timeline */}
-        <div
-          className="features-section py-5"
-          style={{ backgroundColor: 'transparent', color: '#333', position: 'relative' }}
-        >
+      </div>
 
-          <Container className="narrow-container" style={{ maxWidth: '50%' }}>
-            <div className="timeline">
-
-
+      {/* Features Section Styled Like Timeline */}
+      <div
+        className="features-section py-5"
+        style={{ backgroundColor: 'transparent', color: '#333', position: 'relative' }}
+      >
+        <Container className="narrow-container" style={{ maxWidth: '50%' }}>
+          <div className="timeline">
             <Row className="align-items-center mb-5">
               <Col md={6} className="text-md-end">
                 <img
@@ -220,13 +235,13 @@ const Home = () => {
                   alt="Save Money"
                   className="img-fluid"
                   style={{
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', 
-                    borderRadius: '10px', 
-                    transition: 'transform 0.2s ease-in-out', 
-                    cursor: 'pointer', 
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                    borderRadius: '10px',
+                    transition: 'transform 0.2s ease-in-out',
+                    cursor: 'pointer',
                   }}
-                  onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.03)')} 
-                  onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')} 
+                  onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
+                  onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                 />
               </Col>
               <Col md={6} className="d-flex align-items-center">
@@ -241,46 +256,48 @@ const Home = () => {
               </Col>
             </Row>
 
-              <div className="timeline-dot"></div>
+            <div className="timeline-dot"></div>
 
-              
-              <Row className="align-items-center mb-5">
-            <Col md={6} className="order-md-1 d-flex align-items-center">
-              <div>
-                <h3 className="text-dark" style={{ fontWeight: 'bold' }}>
-                  Reduce Emissions
-                </h3>
-                <p>
-                  Help reduce traffic congestion and pollution in the greater Reykjavík area.
-                </p>
-              </div>
-            </Col>
-            <Col md={6} className="text-md-start order-md-2">
-              <img
-                src={reduceEmissionImg}
-                alt="Reduce Emissions"
-                className="img-fluid"
-                style={{
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', 
-                  borderRadius: '10px', 
-                  transition: 'transform 0.2s ease-in-out', 
-                  cursor: 'pointer', 
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.03)')} 
-                onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')} 
-              />
-            </Col>
-          </Row>
-              <div className="timeline-dot"></div>
-            </div>
-          </Container>
-        </div>
+            <Row className="align-items-center mb-5">
+              <Col md={6} className="order-md-1 d-flex align-items-center">
+                <div>
+                  <h3 className="text-dark" style={{ fontWeight: 'bold' }}>
+                    Reduce Emissions
+                  </h3>
+                  <p>
+                    Help reduce traffic congestion and pollution in the greater Reykjavík area.
+                  </p>
+                </div>
+              </Col>
+              <Col md={6} className="text-md-start order-md-2">
+                <img
+                  src={reduceEmissionImg}
+                  alt="Reduce Emissions"
+                  className="img-fluid"
+                  style={{
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                    borderRadius: '10px',
+                    transition: 'transform 0.2s ease-in-out',
+                    cursor: 'pointer',
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
+                  onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                />
+              </Col>
+            </Row>
+            <div className="timeline-dot"></div>
+          </div>
+        </Container>
       </div>
 
       {/* Call to Action Section */}
       <div
         className="call-to-action-section py-5"
-        style={{ backgroundColor: '#f7f4ef', color: '#333' }}
+        style={{
+          backgroundColor: '#f7f4ef',
+          color: '#333',
+          boxShadow: '0 -10px 10px -10px rgba(0, 0, 0, 0.2)',
+        }}
       >
         <Container>
           <Row className="justify-content-center">
